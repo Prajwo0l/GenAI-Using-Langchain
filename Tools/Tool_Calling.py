@@ -13,4 +13,16 @@ print(multiply.description())
 model=ChatOpenAI
 
 llm_tool=model.bind_tools([multiply])
+llm_tool.invoke('Can you help me!')
 
+query=HumanMessage('Can you multiply 3 with 10')
+messages=[query]
+result=llm_tool.invoke(messages)
+messages.append(result)
+print(result.tool_calls[0]['args'])
+
+tool_result=multiply.invoke(result.tool_calls[0])
+messages.append(tool_result)
+
+final_result=llm_tool.invoke(messages).content
+print(final_result)
